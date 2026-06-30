@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import { seedDatabase } from './seed.js';
 
 let mongod = null;
@@ -11,6 +10,10 @@ const connectDB = async () => {
     // Use in-memory MongoDB if no custom MONGO_URI is set or if it's pointing to localhost default
     if (!mongoUri || mongoUri.includes('localhost') || mongoUri.includes('127.0.0.1')) {
       console.log('No external MONGO_URI set. Starting local in-memory MongoDB server...');
+      
+      // Dynamic import to avoid crash in production where devDependencies are not installed
+      const { MongoMemoryServer } = await import('mongodb-memory-server');
+      
       mongod = await MongoMemoryServer.create({
         instance: {
           dbName: 'devboard'
