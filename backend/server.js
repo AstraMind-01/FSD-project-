@@ -30,10 +30,21 @@ const app = express();
 const server = http.createServer(app);
 
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+const allowedOrigins = [
+  clientUrl,
+  'https://fsd-project-eight-psi.vercel.app',
+  'http://localhost:5173'
+];
 
 app.use(
   cors({
-    origin: clientUrl,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   })
@@ -46,7 +57,7 @@ app.use(cookieParser());
 // Initialize Socket.io and store reference
 const io = new Server(server, {
   cors: {
-    origin: clientUrl,
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST'],
   },
