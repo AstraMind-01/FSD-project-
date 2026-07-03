@@ -40,7 +40,7 @@ export const NotificationProvider = ({ children }) => {
     let socketInstance;
 
     if (user) {
-      socketInstance = io(import.meta.env.VITE_SOCKET_URL || window.location.origin, {
+      socketInstance = io(import.meta.env.VITE_SOCKET_URL || 'https://fsd-project-7kv2.onrender.com', {
         withCredentials: true,
       });
 
